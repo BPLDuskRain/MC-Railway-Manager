@@ -41,4 +41,15 @@ public class StationDTO {
     public void setNextStationId(Integer nextStationId) {
         this.nextStationId = nextStationId;
     }
+
+    @Override
+    public String toString() {
+        return "StationDTO{" +
+                "stationNameCN='" + stationNameCN + '\'' +
+                ", stationNameEN='" + stationNameEN + '\'' +
+                ", lineName='" + lineName + '\'' +
+                ", preStationId=" + preStationId +
+                ", nextStationId=" + nextStationId +
+                '}';
+    }
 }

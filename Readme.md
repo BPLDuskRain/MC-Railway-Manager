@@ -52,9 +52,9 @@ public class LineInfoDTO {
         private Integer stationNum;
     }
     public class Station {
-        private Integer StationId;
-        private String StationNameCN;
-        private String StationNameEN;
+        private Integer stationId;
+        private String stationNameCN;
+        private String stationNameEN;
         private String lineName;
         private Integer innerId;
     }

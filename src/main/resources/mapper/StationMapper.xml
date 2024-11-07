@@ -11,6 +11,11 @@
         FROM "Station"
         WHERE "stationId" = #{stationId};
     </select>
+    <select id="getStationByNameAndLine" resultType="com.RailManager.demo.model.Station">
+        SELECT *
+        FROM "Station"
+        WHERE "stationNameCN" = #{stationNameCN} AND "lineName" = #{lineName};
+    </select>
     <select id="getAllStations" resultType="com.RailManager.demo.model.Station">
         SELECT *
         FROM "Station"

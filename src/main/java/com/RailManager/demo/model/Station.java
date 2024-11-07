@@ -4,31 +4,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Station {
-    private Integer StationId;
-    private String StationNameCN;
-    private String StationNameEN;
+    private Integer stationId;
+    private String stationNameCN;
+    private String stationNameEN;
     private String lineName;
     private Integer innerId;
 
     public Integer getStationId() {
-        return StationId;
+        return stationId;
     }
     public void setStationId(Integer stationId) {
-        StationId = stationId;
+        this.stationId = stationId;
     }
 
     public String getStationNameCN() {
-        return StationNameCN;
+        return stationNameCN;
     }
     public void setStationNameCN(String stationNameCN) {
-        StationNameCN = stationNameCN;
+        this.stationNameCN = stationNameCN;
     }
 
     public String getStationNameEN() {
-        return StationNameEN;
+        return stationNameEN;
     }
     public void setStationNameEN(String stationNameEN) {
-        StationNameEN = stationNameEN;
+        this.stationNameEN = stationNameEN;
     }
 
     public String getLineName() {
@@ -43,5 +43,16 @@ public class Station {
     }
     public void setInnerId(Integer innerId) {
         this.innerId = innerId;
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "stationId=" + stationId +
+                ", stationNameCN='" + stationNameCN + '\'' +
+                ", stationNameEN='" + stationNameEN + '\'' +
+                ", lineName='" + lineName + '\'' +
+                ", innerId=" + innerId +
+                '}';
     }
 }
