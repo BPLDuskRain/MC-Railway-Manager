@@ -17,4 +17,12 @@ public class LineDTO {
     public void setLineColor(String lineColor) {
         this.lineColor = lineColor;
     }
+
+    @Override
+    public String toString() {
+        return "LineDTO{" +
+                "lineName='" + lineName + '\'' +
+                ", lineColor='" + lineColor + '\'' +
+                '}';
+    }
 }

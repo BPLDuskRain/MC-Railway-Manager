@@ -43,12 +43,20 @@ public class Line {
     public int hashCode() {
         return Objects.hash(lineName, stationNum, lineColor);
     }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || obj.getClass() != getClass()) return false;
         Line line = (Line) obj;
         return lineName.equals(line.lineName) && stationNum.equals(line.stationNum) && lineColor.equals(line.lineColor);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "lineName='" + lineName + '\'' +
+                ", lineColor='" + lineColor + '\'' +
+                ", stationNum=" + stationNum +
+                '}';
     }
 }

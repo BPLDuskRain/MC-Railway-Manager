@@ -22,4 +22,12 @@ public class LineInfoDTO {
     public void setStations(List<Station> stations) {
         this.stations = stations;
     }
+
+    @Override
+    public String toString() {
+        return "LineInfoDTO{" +
+                "line=" + line +
+                ", stations=" + stations +
+                '}';
+    }
 }
