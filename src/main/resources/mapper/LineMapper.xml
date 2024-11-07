@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 以上为固定写法 -->
+
+<mapper namespace="com.RailManager.demo.mapper.LineMapper">
+
+    <select id="getLineByName" resultType="com.RailManager.demo.model.Line">
+        SELECT *
+        FROM "Line"
+        WHERE "lineName" = #{lineName};
+    </select>
+
+    <select id="getAllLines" resultType="com.RailManager.demo.model.Line">
+        SELECT *
+        FROM "Line"
+        ORDER BY "lineName" ASC;
+    </select>
+
+    <insert id="insertLine">
+        INSERT INTO "Line"
+        VALUES (#{lineName}, #{stationNum}, #{lineColor});
+    </insert>
+
+    <update id="updateLine">
+        UPDATE  "Line"
+        SET "stationNum" = #{stationNum}, "lineColor" = #{lineColor}
+        WHERE "lineName" = #{lineName};
+    </update>
+    <update id="updateStationNum">
+        UPDATE "Line"
+        SET "stationNum" = #{stationNum}
+        WHERE "lineName" = #{lineName};
+    </update>
+
+    <delete id="deleteLine">
+        DELETE
+        FROM "Line"
+        WHERE "lineName" = #{lineName};
+    </delete>
+
+
+</mapper>

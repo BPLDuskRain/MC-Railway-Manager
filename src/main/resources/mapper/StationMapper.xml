@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 以上为固定写法 -->
+
+<mapper namespace="com.RailManager.demo.mapper.StationMapper">
+
+    <select id="getStationById" resultType="com.RailManager.demo.model.Station">
+        SELECT *
+        FROM "Station"
+        WHERE "stationId" = #{stationId};
+    </select>
+    <select id="getAllStations" resultType="com.RailManager.demo.model.Station">
+        SELECT *
+        FROM "Station"
+        ORDER BY "stationId" ASC;
+    </select>
+    <select id="getStationsByLine" resultType="com.RailManager.demo.model.Station">
+        SELECT *
+        FROM "Station"
+        WHERE "lineName" = #{lineName}
+        ORDER BY "innerId" ASC;
+    </select>
+
+    <insert id="insertStation">
+        INSERT INTO "Station"
+        VALUES (#{stationId}, #{stationNameCN}, #{stationNameEN}, #{lineName}, #{innerId});
+    </insert>
+
+    <update id="updateStation">
+        UPDATE "Station"
+        SET "stationNameCN" = #{stationNameCN}, "stationNameEN" = #{stationNameEN}, "lineName" = #{lineName}, "innerId" = #{innerId}
+        WHERE "stationId" = #{stationId};
+    </update>
+    <update id="updateStationId">
+        UPDATE "Station"
+        SET "stationId" = #{newStationId}
+        WHERE "stationId" = #{oldStationId};
+    </update>
+    <update id="updateInnerId">
+        UPDATE "Station"
+        SET "innerId" = #{innerId}
+        WHERE "stationId" = #{stationId};
+    </update>
+
+    <delete id="deleteStation">
+        DELETE
+        FROM "Station"
+        WHERE "stationId" = #{stationId};
+    </delete>
+
+</mapper>
