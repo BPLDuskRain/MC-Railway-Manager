@@ -11,15 +11,21 @@ import com.RailManager.demo.model.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 @Service
+@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 public class RailwayService {
     @Autowired
     LineMapper lineMapper;
     @Autowired
     StationMapper stationMapper;
+
+    @Transactional(readOnly = true)
     @MyService
     //获取某线DTO
     public LineInfoDTO getLineInfoDTOByName(String lineName){
@@ -28,6 +34,7 @@ public class RailwayService {
         dto.setStations(stationMapper.getStationsByLine(lineName));
         return dto;
     }
+    @Transactional(readOnly = true)
     @MyService
     //获取全部线DTO
     public List<LineInfoDTO> getAllLineInfoDTO(){
@@ -45,14 +52,14 @@ public class RailwayService {
         Line oriLine = lineMapper.getLineByName(dto.getLineName());
         if(oriLine == null) {
             lineMapper.insertLine(line);
-            return ResponseEntity.ok("Line inserted.");
+            return ResponseEntity.ok("Line inserted: " + dto);
         }
         else {
             if(oriLine.equals(line))
                 return ResponseEntity.ok("No need to update.");
             else {
                 lineMapper.updateLine(line);
-                return ResponseEntity.ok("Line updated.");
+                return ResponseEntity.ok("Line updated： " + dto);
             }
         }
     }
@@ -87,7 +94,7 @@ public class RailwayService {
         //修改Line.stationNum
         lineMapper.updateStationNum(dto.getLineName(), stationsByLine.size() + 1);
 
-        return ResponseEntity.ok("Station inserted.");
+        return ResponseEntity.ok("Station inserted: " + dto);
     }
     @MyService
     //删除线信息 级联删除站信息
@@ -104,7 +111,7 @@ public class RailwayService {
                 deleteStation(st.getStationId());
             }
         }
-        return ResponseEntity.ok("Line deleted.");
+        return ResponseEntity.ok("Line deleted: " + delLine);
     }
     @MyService
     //删除站信息 需要前移stationId 前移innerId 修改对应线的stationNum
@@ -133,6 +140,6 @@ public class RailwayService {
         //修改Line.stationNum
         lineMapper.updateStationNum(lineName,  stationsByLine.size() - 1);
 
-        return ResponseEntity.ok("Station deleted.");
+        return ResponseEntity.ok("Station deleted: " + delStation);
     }
 }

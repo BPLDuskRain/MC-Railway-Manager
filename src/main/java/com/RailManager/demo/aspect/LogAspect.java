@@ -44,8 +44,8 @@ public class LogAspect {
         }
         System.out.println();
     }
-    @AfterReturning("@annotation(com.RailManager.demo.annotation.MyService)")
-    public void serviceReturn(JoinPoint joinPoint){
+    @AfterReturning(value = "@annotation(com.RailManager.demo.annotation.MyService)", returning = "res")
+    public void serviceReturn(JoinPoint joinPoint, Object res){
         Object[] args = joinPoint.getArgs();
         System.out.print("[SERVICE]" + joinPoint.getSignature() + '\t');
         for(Object arg : args) {
