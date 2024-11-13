@@ -9,7 +9,6 @@ import com.RailManager.demo.mapper.StationMapper;
 import com.RailManager.demo.model.Line;
 import com.RailManager.demo.model.Station;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,18 +24,18 @@ public class RailwayService {
     @Autowired
     StationMapper stationMapper;
 
+    //获取某线DTO
     @Transactional(readOnly = true)
     @MyService
-    //获取某线DTO
     public LineInfoDTO getLineInfoDTOByName(String lineName){
         LineInfoDTO dto = new LineInfoDTO();
         dto.setLine(lineMapper.getLineByName(lineName));
         dto.setStations(stationMapper.getStationsByLine(lineName));
         return dto;
     }
+    //获取全部线DTO
     @Transactional(readOnly = true)
     @MyService
-    //获取全部线DTO
     public List<LineInfoDTO> getAllLineInfoDTO(){
         List<LineInfoDTO> dtos = new ArrayList<>();
         List<Line> lines = lineMapper.getAllLines();
@@ -45,27 +44,27 @@ public class RailwayService {
         }
         return dtos;
     }
-    @MyService
     //插入新线信息:线名相同为更新
-    public ResponseEntity<String> addLine(LineDTO dto){
+    @MyService
+    public Line addLine(LineDTO dto){
         Line line = new Line(dto);
         Line oriLine = lineMapper.getLineByName(dto.getLineName());
         if(oriLine == null) {
             lineMapper.insertLine(line);
-            return ResponseEntity.ok("Line inserted: " + dto);
+            return line;
         }
         else {
             if(oriLine.equals(line))
-                return ResponseEntity.ok("No need to update.");
+                return null;
             else {
                 lineMapper.updateLine(line);
-                return ResponseEntity.ok("Line updated： " + dto);
+                return line;
             }
         }
     }
-    @MyService
     //插入新站信息：需要获取stationId 获取和后移innerId 修改对应线的stationNum
-    public ResponseEntity<String> addStation(StationDTO dto){
+    @MyService
+    public Station addStation(StationDTO dto){
         Station station = new Station();
         //修改stationId
         List<Station> stations = stationMapper.getAllStations();
@@ -94,14 +93,16 @@ public class RailwayService {
         //修改Line.stationNum
         lineMapper.updateStationNum(dto.getLineName(), stationsByLine.size() + 1);
 
-        return ResponseEntity.ok("Station inserted: " + dto);
+        return station;
     }
-    @MyService
     //删除线信息 级联删除站信息
-    public ResponseEntity<String> deleteLine(String lineName){
+    @MyService
+    public LineInfoDTO deleteLine(String lineName){
         //判断被删除线路是否存在
         Line delLine = lineMapper.getLineByName(lineName);
-        if(delLine == null) return ResponseEntity.ok("No need to delete.");
+        if(delLine == null) return null;
+
+        LineInfoDTO lineInfoDTO = getLineInfoDTOByName(lineName);
         //不存在则删除
         lineMapper.deleteLine(lineName);
         //级联删除站点
@@ -111,14 +112,14 @@ public class RailwayService {
                 deleteStation(st.getStationId());
             }
         }
-        return ResponseEntity.ok("Line deleted: " + delLine);
+        return lineInfoDTO;
     }
-    @MyService
     //删除站信息 需要前移stationId 前移innerId 修改对应线的stationNum
-    public ResponseEntity<String> deleteStation(Integer stationId) {
+    @MyService
+    public Station deleteStation(Integer stationId) {
         //判断被删除站点是否存在
         Station delStation = stationMapper.getStationById(stationId);
-        if(delStation == null) return ResponseEntity.ok("No need to delete.");
+        if(delStation == null) return null;
         //存在则作后续处理并删除
         stationMapper.deleteStation(stationId);
         String lineName = delStation.getLineName();
@@ -140,6 +141,6 @@ public class RailwayService {
         //修改Line.stationNum
         lineMapper.updateStationNum(lineName,  stationsByLine.size() - 1);
 
-        return ResponseEntity.ok("Station deleted: " + delStation);
+        return delStation;
     }
 }

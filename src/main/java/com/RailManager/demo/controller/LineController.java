@@ -4,9 +4,8 @@ import com.RailManager.demo.DTO.LineDTO;
 import com.RailManager.demo.DTO.LineInfoDTO;
 import com.RailManager.demo.DTO.StationDTO;
 import com.RailManager.demo.model.Line;
+import com.RailManager.demo.model.Station;
 import com.RailManager.demo.service.RailwayService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,40 +21,55 @@ public class LineController {
     @Autowired
     RailwayService railwayService;
 
+    final private ResponseEntity<String> crossDomain = ResponseEntity.ok().header("Access-Control-Allow-Origin" ,"localhost:8080").body("");
+
     @RequestMapping("/line/{lineName}")
-    public LineInfoDTO getLine(@PathVariable("lineName") String lineName){
-        return railwayService.getLineInfoDTOByName(lineName);
+    public ResponseEntity<LineInfoDTO> getLine(@PathVariable("lineName") String lineName){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.getLineInfoDTOByName(lineName));
     }
     @RequestMapping("/line")
-    public List<LineInfoDTO> getLine(){
-        return railwayService.getAllLineInfoDTO();
+    public ResponseEntity<List<LineInfoDTO>> getLine(){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.getAllLineInfoDTO());
     }
 
     @RequestMapping("/line/download")
     public ResponseEntity<byte[]> getLineFile(){
         byte[] bytes = railwayService.getAllLineInfoDTO().toString().getBytes(StandardCharsets.UTF_8);
         return ResponseEntity.ok()
-                 .header("Content-Disposition", "attachment; filename=XLM_lines_map.txt")
-                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                 .contentLength(bytes.length)
-                 .body(bytes);
+                .header("Content-Disposition", "attachment; filename=XLM_lines_map.txt")
+                .headers(crossDomain.getHeaders())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(bytes.length)
+                .body(bytes);
     }
 
     @RequestMapping("/addLine")
-    public ResponseEntity<String> addLine(LineDTO dto){
-        return railwayService.addLine(dto);
+    public ResponseEntity<Line> addLine(LineDTO dto){
+            return ResponseEntity.ok()
+                    .headers(crossDomain.getHeaders())
+                    .body(railwayService.addLine(dto));
     }
     @RequestMapping("/addStation")
-    public ResponseEntity<String> addStation(StationDTO dto){
-        return railwayService.addStation(dto);
+    public ResponseEntity<Station> addStation(StationDTO dto){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.addStation(dto));
     }
 
     @RequestMapping("/delLine")
-    public ResponseEntity<String> delLine(String lineName){
-        return railwayService.deleteLine(lineName);
+    public ResponseEntity<LineInfoDTO> delLine(String lineName){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.deleteLine(lineName));
     }
     @RequestMapping("/delStation")
-    public ResponseEntity<String> delStation(Integer stationId){
-        return railwayService.deleteStation(stationId);
+    public ResponseEntity<Station> delStation(Integer stationId){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.deleteStation(stationId));
     }
 }
