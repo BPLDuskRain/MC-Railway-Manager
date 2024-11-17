@@ -2,10 +2,12 @@ package com.RailManager.demo.model;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class Station {
     private Integer stationId;
-    private String stationNameCN;
+    private String stationName;
     private String stationNameEN;
     private String lineName;
     private Integer innerId;
@@ -17,11 +19,11 @@ public class Station {
         this.stationId = stationId;
     }
 
-    public String getStationNameCN() {
-        return stationNameCN;
+    public String getStationName() {
+        return stationName;
     }
-    public void setStationNameCN(String stationNameCN) {
-        this.stationNameCN = stationNameCN;
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
     }
 
     public String getStationNameEN() {
@@ -46,10 +48,22 @@ public class Station {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Station station = (Station) o;
+        return Objects.equals(stationId, station.stationId) && Objects.equals(stationName, station.stationName) && Objects.equals(stationNameEN, station.stationNameEN) && Objects.equals(lineName, station.lineName) && Objects.equals(innerId, station.innerId);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(stationId, stationName, stationNameEN, lineName, innerId);
+    }
+
+    @Override
     public String toString() {
         return "Station{" +
                 "stationId=" + stationId +
-                ", stationNameCN='" + stationNameCN + '\'' +
+                ", stationNameCN='" + stationName + '\'' +
                 ", stationNameEN='" + stationNameEN + '\'' +
                 ", lineName='" + lineName + '\'' +
                 ", innerId=" + innerId +

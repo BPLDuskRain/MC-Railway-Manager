@@ -3,6 +3,7 @@ package com.RailManager.demo.service;
 import com.RailManager.demo.DTO.LineDTO;
 import com.RailManager.demo.DTO.LineInfoDTO;
 import com.RailManager.demo.DTO.StationDTO;
+import com.RailManager.demo.DTO.StationInfoDTO;
 import com.RailManager.demo.annotation.MyService;
 import com.RailManager.demo.mapper.LineMapper;
 import com.RailManager.demo.mapper.StationMapper;
@@ -33,6 +34,15 @@ public class RailwayService {
         dto.setStations(stationMapper.getStationsByLine(lineName));
         return dto;
     }
+    //获取某站DTO
+    @Transactional(readOnly = true)
+    @MyService
+    public StationInfoDTO getStationInfoDTOByNameAndLine(String stationName, String lineName){
+        StationInfoDTO dto = new StationInfoDTO();
+        dto.setStation(stationMapper.getStationByNameAndLine(stationName, lineName));
+        return dto;
+    }
+
     //获取全部线DTO
     @Transactional(readOnly = true)
     @MyService
@@ -44,6 +54,18 @@ public class RailwayService {
         }
         return dtos;
     }
+    //获取全部站DTO
+    @Transactional(readOnly = true)
+    @MyService
+    public List<StationInfoDTO> getAllStationInfoDTO(){
+        List<StationInfoDTO> dtos = new ArrayList<>();
+        List<Station> stations = stationMapper.getAllStations();
+        for(Station station : stations){
+            dtos.add(getStationInfoDTOByNameAndLine(station.getStationName(), station.getLineName()));
+        }
+        return dtos;
+    }
+
     //插入新线信息:线名相同为更新
     @MyService
     public Line addLine(LineDTO dto){
@@ -65,19 +87,23 @@ public class RailwayService {
     //插入新站信息：需要获取stationId 获取和后移innerId 修改对应线的stationNum
     @MyService
     public Station addStation(StationDTO dto){
+        Integer preId = dto.getPreStationId();
+        Integer nextId = dto.getNextStationId();
         Station station = new Station();
-        //修改stationId
         List<Station> stations = stationMapper.getAllStations();
+        List<Station> stationsByLine = stationMapper.getStationsByLine(dto.getLineName());
+        //若前后站不相邻则要求前端正确输入
+        if(!((nextId - preId) == 1 || (nextId == 0 && preId == stationsByLine.size()))){
+            return new Station();
+        }
+        //修改stationId
         if(stations.isEmpty()) station.setStationId(1);
         else station.setStationId(stations.get(stations.size() - 1).getStationId() + 1);
         //设置其他信息
-        station.setStationNameCN(dto.getStationNameCN());
+        station.setStationName(dto.getStationName());
         station.setStationNameEN(dto.getStationNameEN());
         station.setLineName(dto.getLineName());
         //修改innerId
-        Integer preId = dto.getPreStationId();
-        Integer nextId = dto.getNextStationId();
-        List<Station> stationsByLine = stationMapper.getStationsByLine(dto.getLineName());
         if(nextId == 0){
             station.setInnerId(preId + 1);
         }

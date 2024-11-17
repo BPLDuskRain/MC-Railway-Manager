@@ -7,11 +7,18 @@
 <mapper namespace="com.RailManager.demo.mapper.UserMapper">
 
     <select id="getUserById" resultType="com.RailManager.demo.model.User">
-        SELECT * FROM "User" WHERE "UserId" = #{id}
+        SELECT *
+        FROM "User"
+        WHERE "userId" = #{id}
     </select>
-
+    <select id="getUserByName" resultType="com.RailManager.demo.model.User">
+        SELECT *
+        FROM "User"
+        WHERE "userName" = #{userName}
+    </select>
     <select id="getUsers" resultType="com.RailManager.demo.model.User">
-        SELECT * FROM "User"
+        SELECT *
+        FROM "User"
     </select>
 
 </mapper>

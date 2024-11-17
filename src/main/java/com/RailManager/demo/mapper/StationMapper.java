@@ -15,19 +15,28 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED)
 public interface StationMapper {
     @Transactional(readOnly = true)
-    @MySelect Station getStationById(Integer stationId);
+    @MySelect
+    Station getStationById(Integer stationId);
     @Transactional(readOnly = true)
-    @MySelect Station getStationByNameAndLine(String stationNameCN, String lineName);
+    @MySelect
+    Station getStationByNameAndLine(String stationName, String lineName);
     @Transactional(readOnly = true)
-    @MySelect List<Station> getAllStations();
+    @MySelect
+    List<Station> getAllStations();
     @Transactional(readOnly = true)
-    @MySelect List<Station> getStationsByLine(String lineName);
+    @MySelect
+    List<Station> getStationsByLine(String lineName);
 
-    @MyInsert void insertStation(Station station);
+    @MyInsert
+    void insertStation(Station station);
 
-    @MyUpdate void updateStation(Station station);
-    @MyUpdate void updateStationId(Integer oldStationId, Integer newStationId);
-    @MyUpdate void updateInnerId(Integer stationId, Integer innerId);
+    @MyUpdate
+    void updateStation(Station station);
+    @MyUpdate
+    void updateStationId(Integer oldStationId, Integer newStationId);
+    @MyUpdate
+    void updateInnerId(Integer stationId, Integer innerId);
 
-    @MyDelete int deleteStation(Integer stationId);
+    @MyDelete
+    int deleteStation(Integer stationId);
 }

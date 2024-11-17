@@ -14,7 +14,7 @@
     <select id="getStationByNameAndLine" resultType="com.RailManager.demo.model.Station">
         SELECT *
         FROM "Station"
-        WHERE "stationNameCN" = #{stationNameCN} AND "lineName" = #{lineName};
+        WHERE "stationName" = #{stationName} AND "lineName" = #{lineName};
     </select>
     <select id="getAllStations" resultType="com.RailManager.demo.model.Station">
         SELECT *
@@ -30,12 +30,12 @@
 
     <insert id="insertStation">
         INSERT INTO "Station"
-        VALUES (#{stationId}, #{stationNameCN}, #{stationNameEN}, #{lineName}, #{innerId});
+        VALUES (#{stationId}, #{stationName}, #{stationNameEN}, #{lineName}, #{innerId});
     </insert>
 
     <update id="updateStation">
         UPDATE "Station"
-        SET "stationNameCN" = #{stationNameCN}, "stationNameEN" = #{stationNameEN}, "lineName" = #{lineName}, "innerId" = #{innerId}
+        SET "stationName" = #{stationName}, "stationNameEN" = #{stationNameEN}, "lineName" = #{lineName}, "innerId" = #{innerId}
         WHERE "stationId" = #{stationId};
     </update>
     <update id="updateStationId">

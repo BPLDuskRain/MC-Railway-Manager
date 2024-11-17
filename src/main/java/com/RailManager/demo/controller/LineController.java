@@ -1,12 +1,15 @@
 package com.RailManager.demo.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.RailManager.demo.DTO.LineDTO;
 import com.RailManager.demo.DTO.LineInfoDTO;
 import com.RailManager.demo.DTO.StationDTO;
+import com.RailManager.demo.DTO.StationInfoDTO;
 import com.RailManager.demo.model.Line;
 import com.RailManager.demo.model.Station;
 import com.RailManager.demo.service.RailwayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +24,9 @@ public class LineController {
     @Autowired
     RailwayService railwayService;
 
-    final private ResponseEntity<String> crossDomain = ResponseEntity.ok().header("Access-Control-Allow-Origin" ,"localhost:8080").body("");
+    @Value("${crossdomain}")
+    private String crossDomainValues;
+    final private ResponseEntity<String> crossDomain = ResponseEntity.ok().header("Access-Control-Allow-Origin" ,crossDomainValues).body("");
 
     @RequestMapping("/line/{lineName}")
     public ResponseEntity<LineInfoDTO> getLine(@PathVariable("lineName") String lineName){
@@ -29,11 +34,26 @@ public class LineController {
                 .headers(crossDomain.getHeaders())
                 .body(railwayService.getLineInfoDTOByName(lineName));
     }
+    @RequestMapping("/line/{lineName}/{stationName}")
+    public ResponseEntity<StationInfoDTO> getStationByNameAndLine(
+            @PathVariable("lineName") String lineName,
+            @PathVariable("stationName")String stationName){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.getStationInfoDTOByNameAndLine(stationName, lineName));
+    }
+
     @RequestMapping("/line")
-    public ResponseEntity<List<LineInfoDTO>> getLine(){
+    public ResponseEntity<List<LineInfoDTO>> getLines(){
         return ResponseEntity.ok()
                 .headers(crossDomain.getHeaders())
                 .body(railwayService.getAllLineInfoDTO());
+    }
+    @RequestMapping("/line/station")
+    public ResponseEntity<List<StationInfoDTO>> getStations(){
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.getAllStationInfoDTO());
     }
 
     @RequestMapping("/line/download")
@@ -47,27 +67,35 @@ public class LineController {
                 .body(bytes);
     }
 
-    @RequestMapping("/addLine")
+    @RequestMapping("/line/addLine")
     public ResponseEntity<Line> addLine(LineDTO dto){
-            return ResponseEntity.ok()
-                    .headers(crossDomain.getHeaders())
-                    .body(railwayService.addLine(dto));
+        if(!StpUtil.hasPermission("canAdd"))
+            return ResponseEntity.ok().headers(crossDomain.getHeaders()).body(null);
+        return ResponseEntity.ok()
+                .headers(crossDomain.getHeaders())
+                .body(railwayService.addLine(dto));
     }
-    @RequestMapping("/addStation")
+    @RequestMapping("/line/addStation")
     public ResponseEntity<Station> addStation(StationDTO dto){
+        if(!StpUtil.hasPermission("canAdd"))
+            return ResponseEntity.ok().headers(crossDomain.getHeaders()).body(null);
         return ResponseEntity.ok()
                 .headers(crossDomain.getHeaders())
                 .body(railwayService.addStation(dto));
     }
 
-    @RequestMapping("/delLine")
+    @RequestMapping("/line/delLine")
     public ResponseEntity<LineInfoDTO> delLine(String lineName){
+        if(!StpUtil.hasPermission("canDelete"))
+            return ResponseEntity.ok().headers(crossDomain.getHeaders()).body(null);
         return ResponseEntity.ok()
                 .headers(crossDomain.getHeaders())
                 .body(railwayService.deleteLine(lineName));
     }
-    @RequestMapping("/delStation")
+    @RequestMapping("/line/delStation")
     public ResponseEntity<Station> delStation(Integer stationId){
+        if(!StpUtil.hasPermission("canDelete"))
+            return ResponseEntity.ok().headers(crossDomain.getHeaders()).body(null);
         return ResponseEntity.ok()
                 .headers(crossDomain.getHeaders())
                 .body(railwayService.deleteStation(stationId));

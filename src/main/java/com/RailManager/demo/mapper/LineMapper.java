@@ -16,14 +16,20 @@ import java.util.List;
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 public interface LineMapper {
     @Transactional(readOnly = true)
-    @MySelect Line getLineByName(String lineName);
+    @MySelect
+    Line getLineByName(String lineName);
     @Transactional(readOnly = true)
-    @MySelect List<Line> getAllLines();
+    @MySelect
+    List<Line> getAllLines();
 
-    @MyInsert void insertLine(Line line);
+    @MyInsert
+    void insertLine(Line line);
 
-    @MyUpdate void updateLine(Line line);
-    @MyUpdate void updateStationNum(String lineName, Integer stationNum);
+    @MyUpdate
+    void updateLine(Line line);
+    @MyUpdate
+    void updateStationNum(String lineName, Integer stationNum);
 
-    @MyDelete int deleteLine(String lineName);
+    @MyDelete
+    int deleteLine(String lineName);
 }
