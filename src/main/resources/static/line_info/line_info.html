@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LineInfo</title>
+    <script src="../axios.min.js"></script>
+    <script src="./fetchLine.js"></script>
+</head>
+<body>
+    <h2 id="line_name">
+        <!-- ${lineName} -->
+    </h2>
+    <pre id="line_txt">
+    <!-- fetchLineWhenUpdate/fetch
+        ../info_txt/${lineName}/${lineName}.txt
+    -->
+    </pre>
+    <div id="stations_info">
+    <!-- fetchLineWhenUpdate/axios.get
+        http://localhost:8080/line/${lineName}
+        <h3>
+            <a>
+                编号${innerId}：${stationName} 
+            </a>
+            <i>${stationNameEN}</i>
+        </h3>
+    -->
+    </div>
+    <h3>增添车站</h3>
+    <form id="add_station">
+    <!-- add_station
+        <label for="stationName">车站名</label>
+        <input id="stationName" name="stationName" type="text">
+        <label for="stationNameEN">车站英文名</label>
+        <input id="stationNameEN" name="stationNameEN" type="text">
+        <input name="lineName" type="hidden" value=${line.lineName}>
+        <label for="preStation">上一站</label>
+        <select id="preStation" name="preStationId">
+            <option value=${innerId}>${stationName}</option>
+
+        </select>
+        <label for="nextStation">下一站</label>
+        <select id="nextStation" name="nextStationId">
+            <option value=${innerId}>${stationName}</option>
+
+        </select>
+
+        <button type="button">添加</button> click->submitAdd()
+    -->
+    </form>
+    <div id="new_station">
+    <!-- submitAdd 
+        <p>
+            ${lineName}/${innerId}: ${innerId}/${stationName}(${stationNameEN})增添成功
+        </p>
+    -->
+    </div>
+    <h3>删除车站</h3>
+    <form id="delete_station">
+    <!-- 
+        <label for="delStation">删除站点</label>
+        <select id="delStation" name="stationId">
+            <option value=${stationId}>${stationName}</option>
+
+        </select>
+
+        <button type="button">删除</button> click -> submitDelete()
+    -->
+    </form>
+    <div id="old_station">
+
+    </div>
+
+    <div id="admin_href">
+        <a href="../admin/admin.html" target="_blank">点击跳转管理员登陆</a>
+    </div>
+</body>
+</html>

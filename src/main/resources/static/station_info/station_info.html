@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StationInfo</title>
+    <script src="../axios.min.js"></script>
+    <script src="./fetchStation.js"></script>
+</head>
+<body>
+    <h2 id="station_name">
+        <!-- fetchStationWhenUpdate/axios.get
+        ${stationName}<i>${stationNameEN}</i>(${innerId}) 
+        -->
+    </h2>
+    <pre id="station_txt">
+        <!-- fetchStationWhenUpdate/fetch
+        ../info_txt/${lineName}/${stationName}.txt
+        -->
+    </pre>
+    <div id="admin_href">
+        <a href="../admin/admin.html" target="_blank">点击跳转管理员登陆</a>
+    </div>
+</body>
+</html>

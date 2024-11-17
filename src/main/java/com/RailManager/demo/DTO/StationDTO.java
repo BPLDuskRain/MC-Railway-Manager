@@ -1,17 +1,17 @@
 package com.RailManager.demo.DTO;
 
 public class StationDTO {
-    private String stationNameCN;
+    private String stationName;
     private String stationNameEN;
     private String lineName;
     private Integer preStationId;
     private Integer nextStationId;
 
-    public String getStationNameCN() {
-        return stationNameCN;
+    public String getStationName() {
+        return stationName;
     }
-    public void setStationNameCN(String stationNameCN) {
-        this.stationNameCN = stationNameCN;
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
     }
 
     public String getStationNameEN() {
@@ -45,7 +45,7 @@ public class StationDTO {
     @Override
     public String toString() {
         return "StationDTO{" +
-                "stationNameCN='" + stationNameCN + '\'' +
+                "stationName='" + stationName + '\'' +
                 ", stationNameEN='" + stationNameEN + '\'' +
                 ", lineName='" + lineName + '\'' +
                 ", preStationId=" + preStationId +
