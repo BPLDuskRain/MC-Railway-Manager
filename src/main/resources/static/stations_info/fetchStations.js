@@ -1,7 +1,7 @@
 window.onload = fetchStationsWhenUpdate;
 
 function fetchStationsWhenUpdate(){
-    axios.get('http://47.109.64.104:8080/line/station')
+    axios.get(`${url}/station`)
         .then(response => {
             const stationsInfo_element = document.getElementById('stations_info');
             const element = document.createDocumentFragment();
@@ -17,11 +17,11 @@ function fetchStationsWhenUpdate(){
 }
 
 function createStationElement(station){
-    const{lineName, innerId, stationName} = station;
+    const{stationId, lineName, innerId, stationName} = station;
 
     const station_element = document.createElement('p');
         const station_span_element = document.createElement('span');
-            station_span_element.textContent = `${lineName}/${innerId}：`;
+            station_span_element.textContent = `第${stationId}站：${lineName}/${innerId}：`;
         station_element.appendChild(station_span_element);
 
         const station_a_element = document.createElement('a');

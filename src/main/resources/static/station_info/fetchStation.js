@@ -6,7 +6,7 @@ function fetchStationWhenUpdate() {
     const stationName = pair.get('stationName');
 
     const stationName_element = document.getElementById('station_name');
-    axios.get(`http://47.109.64.104:8080/line/${lineName}/${stationName}`)
+    axios.get(`${url}/line/${lineName}/${stationName}`)
     .then(response => {
         const {station} = response.data;
         const{stationName, stationNameEN, innerId} = station;

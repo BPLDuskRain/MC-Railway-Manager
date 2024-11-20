@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LinesInfo</title>
     <script src="../axios.min.js"></script>
+    <script src="../config.js"></script>
     <script src="./fetchLines.js"></script>
 </head>
 <body>
@@ -29,8 +30,51 @@
         </p>
     -->
     </div>
+    <h3>增添线路</h3>
+    <form id="add_line">
+        <label for="lineName">线路名称</label>
+        <input id="lineName" name="lineName" type="text" required>
+        <label for="lineColor">线路色彩</label>
+        <input id="lineColor" name="lineColor" type="color" required>
+        <button id="submit_addLine" type="button">添加</button>
+    </form>
+    <div id="new_line">
+    <!-- submitAddLine
+        <p style.color=${lineColor}>${lineName}
+            增添成功喵！
+        </p>
+     -->
+    </div>
+
+    <h3>删除线路</h3>
+    <form id="delete_line">
+        <label for="delLine">线路名称</label>
+        <select id="delLine" name="lineName">
+        <!-- 
+            <option value=${lineName}>
+                ${lineName}
+            </option>
+        -->
+        </select>
+        <button id="submit_delLine" type="button">删除</button>
+    </form>
+    <div id="old_line">
+    <!-- submitDelLine 
+        <p style.color=${line.lineColor}>
+            ${line.lineName}删除成功喵！
+        </p>
+        <p style.color=${line.lineColor}>
+            ${line.lineName}/${station.innerId}: ${station.stationId}/${station.stationName}(${stationNameEN})删除成功喵！
+        </p>
+     -->
+    </div>
+    <br>
+    <div id="admin_href">
+        <a href="../admin/admin.html" target="_blank">点击跳转管理员登陆</a>
+    </div>
+    <br>
     <div id="station_href">
-        <a href="../stations_info/stations_info.html">全车站展示</a>
+        <a href="../stations_info/stations_info.html">按建造时间展示</a>
     </div>
 </body>
 </html>

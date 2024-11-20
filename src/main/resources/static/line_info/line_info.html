@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LineInfo</title>
     <script src="../axios.min.js"></script>
+    <script src="../config.js"></script>
     <script src="./fetchLine.js"></script>
 </head>
 <body>
@@ -50,9 +51,9 @@
     -->
     </form>
     <div id="new_station">
-    <!-- submitAdd 
+    <!-- submitAddStation
         <p>
-            ${lineName}/${innerId}: ${innerId}/${stationName}(${stationNameEN})增添成功
+            ${lineName}/${innerId}: ${innerId}/${stationName}(${stationNameEN})增添成功喵！
         </p>
     -->
     </div>
@@ -69,7 +70,11 @@
     -->
     </form>
     <div id="old_station">
-
+    <!-- submitDeleteStation
+        <p>
+            ${lineName}/${innerId}: ${stationId}/${stationName}(${stationNameEN})删除成功喵！
+        </p>
+    -->
     </div>
 
     <div id="admin_href">

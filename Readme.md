@@ -1,43 +1,103 @@
 # 这是一个后端数据处理系统
-技术栈：SpringBoot+MyBatis+postgreSQL
+技术栈：SpringBoot+MyBatis+PostgreSQL
 鉴权：sa-token
 ## 增
 ### 增添线路API
-服务器拉取`LineDTO`，路由映射为`/line/addLine`
+路由映射为`@PostMapping("/line/addLine")`
+
+前端提交`LineDTO`
 ```Java
 public class LineDTO {
     private String lineName;
-    private String lineColor;
+    private String lineColor;//#FFFFFF形式
 }
 ```
-`lineColor`要求#16进制形式
+后端返回`Line`
+```Java
+public class Line {
+    private String lineName;
+    private String lineColor;
+    private Integer stationNum;
+}
+```
+- 若权限不足，返回体为字符串`CANNOT ADD`
 ### 增添站点API
-服务器拉取`StationDTO`，路由映射为`/line/addStation`
+路由映射为`@PostMapping("/line/addStation")`
+
+前端提交`StationDTO`
 ```Java
 public class StationDTO {
     private String stationName;
     private String stationNameEN;
     private String lineName;
-    private Integer preStationId;
-    private Integer nextStationId;
+    private Integer preStationId;//尽量先拉取原线站点，采用下拉表单呈现站名，提交id
+    private Integer nextStationId;//尽量先拉取原线站点，采用下拉表单呈现站名，提交id
 }
 ```
-`preStationId`和`nextStationId`尽量采用先拉取原线站点，采用下拉表单呈现站名并返回id的形式
+后端返回`Station`
+```Java
+public class Station {
+    private Integer stationId;
+    private String stationName;
+    private String stationNameEN;
+    private String lineName;
+    private Integer innerId;
+}
+```
+- 若权限不足，返回体为字符串`CANNOT ADD`
+- 若站点位置不合理，返回体为字符串`INVALID POSITION`
 ## 删
 ### 删除线路API
-服务器拉取线路名称，路由映射为`/line/delLine`
-```Java
-String lineName;
-```
 删除线路会级联删除其下站点
 
-`lineName`应采用下拉表单方式选择
-### 删除站点API
-服务器拉取站点ID，路由映射为`/line/delStation`
+路由映射为`@PostMapping("/line/delLine")`
+
+前端提交`String`
 ```Java
-Integer stationId;
+String lineName;//尽量先拉取全线，采用下拉表单呈现线名提交
 ```
-`stationId`也应采用下拉表单方式展示站名返回id
+后端返回`LineInfoDTO`
+```Java
+public class LineInfoDTO {
+    private Line line;
+    private List<Station> stations;
+}
+
+    public class Line {
+        private String lineName;
+        private String lineColor;
+        private Integer stationNum;
+    }
+    public class Station {
+        private Integer stationId;
+        private String stationName;
+        private String stationNameEN;
+        private String lineName;
+        private Integer innerId;
+    }
+```
+- 若权限不足，返回体为字符串`CANNOT DELETE`
+### 删除站点API
+路由映射为`@PostMapping("/line/delStation")`
+
+前端提交`Integer`
+```Java
+Integer stationId;//尽量先拉取原线站点，采用下拉表单呈现站名，提交id
+```
+后端返回`StationInfoDTO`
+```Java
+public class StationInfoDTO {
+    private Station station;
+}
+    public class Station {
+        private Integer stationId;
+        private String stationName;
+        private String stationNameEN;
+        private String lineName;
+        private Integer innerId;
+    }
+```
+- 若权限不足，返回体为字符串`CANNOT DELETE`
 ## 改
 ### 修改线路API
 并入到增添中，若线路名称相同视为修改
@@ -46,7 +106,9 @@ Integer stationId;
 ## 查
 ### 查找线路API
 #### 显示某条线路信息
-服务器推送`LineInfoDTO`，路由映射为`line/{lineName}`
+路由映射为`@GetMapping("/line/{lineName}")`
+
+后端返回`LineInfoDTO`
 ```Java
 public class LineInfoDTO {
     private Line line;
@@ -67,10 +129,14 @@ public class LineInfoDTO {
     }
 ```
 #### 显示全部线路信息
-服务器推送`List<LineInfoDTO>`，路由映射为`/line`
+路由映射为`@GetMapping("/line")`
+
+后端提交`List<LineInfoDTO>`
 ### 查找站点API
 #### 显示某个站点信息
-服务器推送`StationInfoDTO`，路由映射为`/line/{lineName}/{stationName}`
+路由映射为`@GetMapping("/line/{lineName}/{stationName}")`
+
+后端提交`StationInfoDTO`
 ```Java
 public class StationInfoDTO {
     private Station station;
@@ -85,4 +151,6 @@ public class StationInfoDTO {
     }
 ```
 #### 显示全部站点信息
-服务器推送`List<StationInfoDTO>`，路由映射为`/line/station`
+路由映射为`@GetMapping("/station")`
+
+后端提交`List<StationInfoDTO>`

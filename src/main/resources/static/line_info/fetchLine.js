@@ -16,7 +16,7 @@ function fetchLineWhenUpdate() {
         });
 
     
-    axios.get(`http://47.109.64.104:8080/line/${lineName}`)
+    axios.get(`${url}/line/${lineName}`)
         .then(response => {
             const{line, stations} = response.data;
 
@@ -63,12 +63,14 @@ function add_station({line, stations}){
         stationName_input.id = 'stationName';
         stationName_input.name = 'stationName';
         stationName_input.type = 'text';
+        stationName_input.required = true;
 
         stationNameEN_label.for = 'stationNameEN';
         stationNameEN_label.textContent = '车站英文名';
         stationNameEN_input.id = 'stationNameEN';
         stationNameEN_input.name = 'stationNameEN';
         stationNameEN_input.type = 'text';
+        stationNameEN_input.required = true;
 
         lineName_input.name = 'lineName';
         lineName_input.type = 'hidden';
@@ -109,7 +111,8 @@ function add_station({line, stations}){
         submit_button.type = 'button';
         submit_button.textContent = '添加';
         submit_button.addEventListener('click', function(){
-            submitAdd();
+            var confirm = window.confirm('确认添加？');
+            if(confirm) submitAddStation();
         });
 
         element.appendChild(stationName_label);
@@ -126,19 +129,19 @@ function add_station({line, stations}){
     return stations;
 }
 
-function submitAdd(){
+function submitAddStation(){
     var form = document.getElementById('add_station');
     const formData = new FormData(form);
     form.reset();
-    axios.post('http://localhost:8080/line/addStation', formData)
-        .then(response =>{
+    axios.post(`${url}/line/addStation`, formData)
+        .then(response => {
             const new_station = document.getElementById('new_station');
             const station = response.data;
-            if(station == ''){
+            if(station == 'CANNOT ADD'){
                 new_station.innerHTML = '<p>请以管理员身份操作喵！</p>';
                 return;
             }
-            if(station.stationId == null){
+            if(station == 'INVALID POSITION'){
                 new_station.innerHTML = '<p>请选择有效站点位置喵！</p>';
                 return;
             }
@@ -169,7 +172,7 @@ function delete_station(stations){
         submit_button.textContent = '删除';
         submit_button.addEventListener('click', function(){
             var comfirm = window.confirm('确定删除本站？');
-            if(comfirm) submitDelete();
+            if(comfirm) submitDeleteStation();
         });
 
         element.appendChild(delStation_label);
@@ -178,18 +181,18 @@ function delete_station(stations){
     deleteStation_form.appendChild(element);
 }
 
-function submitDelete(){
-    var form = document.getElementById('delete_station');
+function submitDeleteStation(){
+    const form = document.getElementById('delete_station');
     const formData = new FormData(form);
-    axios.post('http://localhost:8080/line/delStation', formData)
+    axios.post(`${url}/line/delStation`, formData)
         .then(response =>{
             const old_station = document.getElementById('old_station');
-            const station = response.data;
-            if(station == ''){
+            const station_info = response.data;
+            if(response.data == 'CANNOT DELETE'){
                 old_station.innerHTML = '<p>请以管理员身份操作喵！</p>';
                 return;
             }
-            const {stationId, stationName, stationNameEN, lineName, innerId} = station;
-            old_station.innerHTML = `${lineName}/${innerId}: ${stationId}/${stationName}(${stationNameEN})删除成功喵！`;
+            const {stationId, stationName, stationNameEN, lineName, innerId} = station_info.station;
+            old_station.innerHTML = `<p>${lineName}/${innerId}: ${stationId}/${stationName}(${stationNameEN})删除成功喵！</p>`;
         });
 }

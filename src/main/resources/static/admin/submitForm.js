@@ -2,7 +2,7 @@ function submitForm(){
 
     const formData = new FormData(document.getElementById('lineForm'));
 
-    axios.post('http://localhost:8080/userCheck', formData)
+    axios.post(`${url}/userCheck`, formData)
         .then(response =>{
             const data = response.data;
             if(data === true){

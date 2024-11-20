@@ -94,7 +94,7 @@ public class RailwayService {
         List<Station> stationsByLine = stationMapper.getStationsByLine(dto.getLineName());
         //若前后站不相邻则要求前端正确输入
         if(!((nextId - preId) == 1 || (nextId == 0 && preId == stationsByLine.size()))){
-            return new Station();
+            return null;
         }
         //修改stationId
         if(stations.isEmpty()) station.setStationId(1);
@@ -134,27 +134,28 @@ public class RailwayService {
         //级联删除站点
         List<Station> stations = stationMapper.getStationsByLine(lineName);
         if(!stations.isEmpty()){
-            for(Station st : stations) {
-                deleteStation(st.getStationId());
+            for(Station station : stations) {
+                deleteStation(station.getStationId());
             }
         }
         return lineInfoDTO;
     }
     //删除站信息 需要前移stationId 前移innerId 修改对应线的stationNum
     @MyService
-    public Station deleteStation(Integer stationId) {
+    public StationInfoDTO deleteStation(Integer stationId) {
+        StationInfoDTO stationInfoDTO = new StationInfoDTO();
         //判断被删除站点是否存在
         Station delStation = stationMapper.getStationById(stationId);
         if(delStation == null) return null;
         //存在则作后续处理并删除
-        stationMapper.deleteStation(stationId);
         String lineName = delStation.getLineName();
-        //处理innerId
         List<Station> stationsByLine = stationMapper.getStationsByLine(lineName);
+        stationMapper.deleteStation(stationId);
+        //处理innerId
         Integer innerId = delStation.getInnerId();
-        for (Station st : stationsByLine) {
-            if (innerId < st.getInnerId()) {
-                stationMapper.updateInnerId(st.getStationId(), st.getInnerId() - 1);
+        for (Station station : stationsByLine) {
+            if (innerId < station.getInnerId()) {
+                stationMapper.updateInnerId(station.getStationId(), station.getInnerId() - 1);
             }
         }
         //处理stationId
@@ -165,8 +166,9 @@ public class RailwayService {
             }
         }
         //修改Line.stationNum
-        lineMapper.updateStationNum(lineName,  stationsByLine.size() - 1);
+        lineMapper.updateStationNum(lineName, stationsByLine.size() - 1);
 
-        return delStation;
+        stationInfoDTO.setStation(delStation);
+        return stationInfoDTO;
     }
 }

@@ -50,19 +50,41 @@
 window.onload = fetchLinesWhenUpdate;
 
 function fetchLinesWhenUpdate() {
-    axios.get('http://47.109.64.104:8080/line')
+    axios.get(`${url}/line`)
         .then(response => {
             // 获取要更新的DOM元素
             const linesInfo_element = document.getElementById('lines_info');
+            const lines_info = response.data;
             const element = document.createDocumentFragment();
-                response.data.forEach(lineInfo => {
-                    const{line, stations} = lineInfo;
+                lines_info.forEach(line_info => {
+                    const{line, stations} = line_info;
                     element.appendChild(createLineElement(line));
                     stations.forEach(station => {
                         element.appendChild(createStationElement(line, station));
                     });
                 });
             linesInfo_element.appendChild(element);
+        
+            const submitAdd_button = document.getElementById('submit_addLine');
+            submitAdd_button.addEventListener('click', function(){
+                var confirm = window.confirm('确认添加？');
+                if(confirm) submitAddLine();
+            });
+
+            const delLine_select = document.getElementById('delLine');
+                lines_info.forEach(line_info => {
+                    const {line} = line_info;
+                    const delLine_option = document.createElement('option');
+                    delLine_option.value = `${line.lineName}`;
+                    delLine_option.textContent = `${line.lineName}`;
+                    delLine_select.appendChild(delLine_option);
+                });
+
+            const submitDel_button = document.getElementById('submit_delLine');
+            submitDel_button.addEventListener('click', function(){
+                var confirm = window.confirm('确认删除本线？（下属的所有车站也会一并删除！）');
+                if(confirm) submitDeleteLine();
+            })
         })
         .catch(error => {
             // 处理错误
@@ -103,4 +125,52 @@ function createStationElement(line, station){
             station_a_element.textContent = `${stationName}`;
         station_element.appendChild(station_a_element);
     return station_element;
+}
+
+function submitAddLine(){
+    var form = document.getElementById('add_line');
+    const formData = new FormData(form);
+    form.reset();
+    axios.post(`${url}/line/addLine`, formData)
+        .then(response => {
+            const new_line = document.getElementById('new_line');
+            if(response.data == 'CANNOT ADD'){
+                new_line.innerHTML = '<p>请以管理员身份操作喵！</p>';
+                return;
+            }
+            const {lineName, lineColor, stationNum} = response.data;
+            new_line.innerHTML = `<p style.color=${lineColor}>${lineName}增添成功喵！</p>` 
+        })
+        .catch(error => {
+            document.getElementById('new_line').innerHTML = '<p>Error adding line data. Please try again later.</p>';
+        });
+}
+
+function submitDeleteLine(){
+    const form = document.getElementById('delete_line');
+    const formData = new FormData(form);
+    axios.post(`${url}/line/delLine`, formData)
+        .then(response => {
+            const old_line = document.getElementById('old_line');
+            if(response.data == 'CANNOT DELETE'){
+                old_line.innerHTML = '<p>请以管理员身份操作喵！</p>';
+                return;
+            }
+            const {line, stations} = response.data;
+            const element = document.createDocumentFragment();
+                const line_p = document.createElement('p');
+                line_p.style.color = `${line.lineColor}`;
+                line_p.textContent = `${line.lineName}删除成功喵！`;
+                element.appendChild(line_p);
+                stations.forEach(station => {
+                    const station_p = document.createElement('p');
+                    station_p.style.color = `${line.lineColor}`;
+                    station_p.textContent = `${line.lineName}/${station.innerId}: ${station.stationId}/${station.stationName}(${stationNameEN})删除成功喵！`;
+                    element.appendChild(station_p);
+                });
+            old_line.appendChild(element);
+        })
+        .catch(error => {
+            document.getElementById('old_line').innerHTML = '<p>Error deleting line data. Please try again later.</p>';
+        });
 }
