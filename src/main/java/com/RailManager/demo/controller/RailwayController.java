@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-public class LineController {
+public class RailwayController {
     @Autowired
     RailwayService railwayService;
 
@@ -63,7 +63,7 @@ public class LineController {
                 .body(bytes);
     }
 
-    @PostMapping("/line/addLine")
+    @PostMapping("/line")
     public ResponseEntity<?> addLine(LineDTO dto){
         if(!StpUtil.hasPermission("canAdd"))
             return ResponseEntity.ok().header("Access-Control-Allow-Origin", crossDomainValues).body("CANNOT ADD");
@@ -71,7 +71,7 @@ public class LineController {
                 .header("Access-Control-Allow-Origin", crossDomainValues)
                 .body(railwayService.addLine(dto));
     }
-    @PostMapping("/line/addStation")
+    @PostMapping("/station")
     public ResponseEntity<?> addStation(StationDTO dto){
         if(!StpUtil.hasPermission("canAdd"))
             return ResponseEntity.ok().header("Access-Control-Allow-Origin", crossDomainValues).body("CANNOT ADD");
@@ -80,16 +80,16 @@ public class LineController {
                 .body(Objects.requireNonNullElse(railwayService.addStation(dto), "INVALID POSITION"));
     }
 
-    @PostMapping("/line/delLine")
-    public ResponseEntity<?> delLine(String lineName){
+    @DeleteMapping("/line/{lineName}")
+    public ResponseEntity<?> delLine(@PathVariable("lineName") String lineName){
         if(!StpUtil.hasPermission("canDelete"))
             return ResponseEntity.ok().header("Access-Control-Allow-Origin", crossDomainValues).body("CANNOT DELETE");
         return ResponseEntity.ok()
                 .header("Access-Control-Allow-Origin", crossDomainValues)
                 .body(railwayService.deleteLine(lineName));
     }
-    @PostMapping("/line/delStation")
-    public ResponseEntity<?> delStation(Integer stationId){
+    @DeleteMapping("/station/{stationId}")
+    public ResponseEntity<?> delStation(@PathVariable("stationId") Integer stationId){
         if(!StpUtil.hasPermission("canDelete"))
             return ResponseEntity.ok().header("Access-Control-Allow-Origin", crossDomainValues).body("CANNOT DELETE");
         return ResponseEntity.ok()

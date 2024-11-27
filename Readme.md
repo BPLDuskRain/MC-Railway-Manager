@@ -1,9 +1,12 @@
 # 这是一个后端数据处理系统
-技术栈：SpringBoot+MyBatis+PostgreSQL
-鉴权：sa-token
+- 主体：Spring框架+SpringBoot+Spring MVC
+- 持久层框架：MyBatis
+- 数据库：PostgresSQL
+- 数据缓冲：Redis
+- 鉴权：Sa-token
 ## 增
-### 增添线路API
-路由映射为`@PostMapping("/line/addLine")`
+### 增添线路
+路由映射为`@PostMapping("/line")`
 
 前端提交`LineDTO`
 ```Java
@@ -21,8 +24,8 @@ public class Line {
 }
 ```
 - 若权限不足，返回体为字符串`CANNOT ADD`
-### 增添站点API
-路由映射为`@PostMapping("/line/addStation")`
+### 增添站点
+路由映射为`@PostMapping("/station")`
 
 前端提交`StationDTO`
 ```Java
@@ -47,10 +50,10 @@ public class Station {
 - 若权限不足，返回体为字符串`CANNOT ADD`
 - 若站点位置不合理，返回体为字符串`INVALID POSITION`
 ## 删
-### 删除线路API
+### 删除线路
 删除线路会级联删除其下站点
 
-路由映射为`@PostMapping("/line/delLine")`
+路由映射为`@DeleteMapping("/line/{lineName}")`
 
 前端提交`String`
 ```Java
@@ -77,8 +80,8 @@ public class LineInfoDTO {
     }
 ```
 - 若权限不足，返回体为字符串`CANNOT DELETE`
-### 删除站点API
-路由映射为`@PostMapping("/line/delStation")`
+### 删除站点
+路由映射为`@DeleteMapping("/station/{stationId}")`
 
 前端提交`Integer`
 ```Java
@@ -99,12 +102,12 @@ public class StationInfoDTO {
 ```
 - 若权限不足，返回体为字符串`CANNOT DELETE`
 ## 改
-### 修改线路API
+### 修改线路
 并入到增添中，若线路名称相同视为修改
-### 修改站点API
+### 修改站点
 无
 ## 查
-### 查找线路API
+### 查找线路
 #### 显示某条线路信息
 路由映射为`@GetMapping("/line/{lineName}")`
 
@@ -132,7 +135,7 @@ public class LineInfoDTO {
 路由映射为`@GetMapping("/line")`
 
 后端提交`List<LineInfoDTO>`
-### 查找站点API
+### 查找站点
 #### 显示某个站点信息
 路由映射为`@GetMapping("/line/{lineName}/{stationName}")`
 

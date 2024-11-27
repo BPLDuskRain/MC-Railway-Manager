@@ -5,8 +5,6 @@ import com.RailManager.demo.DTO.LineInfoDTO;
 import com.RailManager.demo.DTO.StationDTO;
 import com.RailManager.demo.DTO.StationInfoDTO;
 import com.RailManager.demo.annotation.MyService;
-import com.RailManager.demo.mapper.LineMapper;
-import com.RailManager.demo.mapper.StationMapper;
 import com.RailManager.demo.model.Line;
 import com.RailManager.demo.model.Station;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +19,17 @@ import java.util.List;
 @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 public class RailwayService {
     @Autowired
-    LineMapper lineMapper;
+    LineService lineService;
     @Autowired
-    StationMapper stationMapper;
+    StationService stationService;
 
     //获取某线DTO
     @Transactional(readOnly = true)
     @MyService
     public LineInfoDTO getLineInfoDTOByName(String lineName){
         LineInfoDTO dto = new LineInfoDTO();
-        dto.setLine(lineMapper.getLineByName(lineName));
-        dto.setStations(stationMapper.getStationsByLine(lineName));
+        dto.setLine(lineService.getLineByName(lineName));
+        dto.setStations(stationService.getStationsByLine(lineName));
         return dto;
     }
     //获取某站DTO
@@ -39,7 +37,7 @@ public class RailwayService {
     @MyService
     public StationInfoDTO getStationInfoDTOByNameAndLine(String stationName, String lineName){
         StationInfoDTO dto = new StationInfoDTO();
-        dto.setStation(stationMapper.getStationByNameAndLine(stationName, lineName));
+        dto.setStation(stationService.getStationByNameAndLine(stationName, lineName));
         return dto;
     }
 
@@ -48,9 +46,9 @@ public class RailwayService {
     @MyService
     public List<LineInfoDTO> getAllLineInfoDTO(){
         List<LineInfoDTO> dtos = new ArrayList<>();
-        List<Line> lines = lineMapper.getAllLines();
+        List<Line> lines = lineService.getAllLines();
         for(Line line : lines) {
-            dtos.add(getLineInfoDTOByName(line.getLineName()));
+            dtos.add(this.getLineInfoDTOByName(line.getLineName()));
         }
         return dtos;
     }
@@ -59,9 +57,9 @@ public class RailwayService {
     @MyService
     public List<StationInfoDTO> getAllStationInfoDTO(){
         List<StationInfoDTO> dtos = new ArrayList<>();
-        List<Station> stations = stationMapper.getAllStations();
+        List<Station> stations = stationService.getAllStations();
         for(Station station : stations){
-            dtos.add(getStationInfoDTOByNameAndLine(station.getStationName(), station.getLineName()));
+            dtos.add(this.getStationInfoDTOByNameAndLine(station.getStationName(), station.getLineName()));
         }
         return dtos;
     }
@@ -70,16 +68,16 @@ public class RailwayService {
     @MyService
     public Line addLine(LineDTO dto){
         Line line = new Line(dto);
-        Line oriLine = lineMapper.getLineByName(dto.getLineName());
+        Line oriLine = lineService.getLineByName(dto.getLineName());
         if(oriLine == null) {
-            lineMapper.insertLine(line);
+            lineService.insertLine(line);
             return line;
         }
         else {
             if(oriLine.equals(line))
                 return null;
             else {
-                lineMapper.updateLine(line);
+                lineService.updateLine(line);
                 return line;
             }
         }
@@ -90,8 +88,8 @@ public class RailwayService {
         Integer preId = dto.getPreStationId();
         Integer nextId = dto.getNextStationId();
         Station station = new Station();
-        List<Station> stations = stationMapper.getAllStations();
-        List<Station> stationsByLine = stationMapper.getStationsByLine(dto.getLineName());
+        List<Station> stations = stationService.getAllStations();
+        List<Station> stationsByLine = stationService.getStationsByLine(dto.getLineName());
         //若前后站不相邻则要求前端正确输入
         if(!((nextId - preId) == 1 || (nextId == 0 && preId == stationsByLine.size()))){
             return null;
@@ -110,14 +108,14 @@ public class RailwayService {
         else {
             for(Station st : stationsByLine){
                 if(preId < st.getInnerId()){
-                    stationMapper.updateInnerId(st.getStationId(), st.getInnerId() + 1);
+                    stationService.updateInnerId(st.getStationId(), st.getInnerId() + 1);
                 }
             }
             station.setInnerId(preId + 1);
         }
-        stationMapper.insertStation(station);
+        stationService.insertStation(station);
         //修改Line.stationNum
-        lineMapper.updateStationNum(dto.getLineName(), stationsByLine.size() + 1);
+        lineService.updateStationNum(dto.getLineName(), stationsByLine.size() + 1);
 
         return station;
     }
@@ -125,17 +123,17 @@ public class RailwayService {
     @MyService
     public LineInfoDTO deleteLine(String lineName){
         //判断被删除线路是否存在
-        Line delLine = lineMapper.getLineByName(lineName);
+        Line delLine = lineService.getLineByName(lineName);
         if(delLine == null) return null;
 
         LineInfoDTO lineInfoDTO = getLineInfoDTOByName(lineName);
         //不存在则删除
-        lineMapper.deleteLine(lineName);
+        lineService.deleteLine(lineName);
         //级联删除站点
-        List<Station> stations = stationMapper.getStationsByLine(lineName);
+        List<Station> stations = stationService.getStationsByLine(lineName);
         if(!stations.isEmpty()){
             for(Station station : stations) {
-                deleteStation(station.getStationId());
+                this.deleteStation(station.getStationId());
             }
         }
         return lineInfoDTO;
@@ -145,28 +143,28 @@ public class RailwayService {
     public StationInfoDTO deleteStation(Integer stationId) {
         StationInfoDTO stationInfoDTO = new StationInfoDTO();
         //判断被删除站点是否存在
-        Station delStation = stationMapper.getStationById(stationId);
+        Station delStation = stationService.getStationById(stationId);
         if(delStation == null) return null;
         //存在则作后续处理并删除
         String lineName = delStation.getLineName();
-        List<Station> stationsByLine = stationMapper.getStationsByLine(lineName);
-        stationMapper.deleteStation(stationId);
+        List<Station> stationsByLine = stationService.getStationsByLine(lineName);
+        stationService.deleteStation(stationId);
         //处理innerId
         Integer innerId = delStation.getInnerId();
         for (Station station : stationsByLine) {
             if (innerId < station.getInnerId()) {
-                stationMapper.updateInnerId(station.getStationId(), station.getInnerId() - 1);
+                stationService.updateInnerId(station.getStationId(), station.getInnerId() - 1);
             }
         }
         //处理stationId
-        List<Station> stations = stationMapper.getAllStations();
+        List<Station> stations = stationService.getAllStations();
         for (Station station : stations) {
             if (stationId < station.getStationId()) {
-                stationMapper.updateStationId(station.getStationId(), station.getStationId() - 1);
+                stationService.updateStationId(station.getStationId(), station.getStationId() - 1);
             }
         }
         //修改Line.stationNum
-        lineMapper.updateStationNum(lineName, stationsByLine.size() - 1);
+        lineService.updateStationNum(lineName, stationsByLine.size() - 1);
 
         stationInfoDTO.setStation(delStation);
         return stationInfoDTO;

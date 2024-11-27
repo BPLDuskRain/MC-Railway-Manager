@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StationInfo</title>
+    <link rel="stylesheet" href="../css/railway_style.css">
     <script src="../axios.min.js"></script>
     <script src="../config.js"></script>
     <script src="./fetchStation.js"></script>
 </head>
 <body>
-    <h2 id="station_name">
-        <!-- fetchStationWhenUpdate/axios.get
-        ${stationName}<i>${stationNameEN}</i>(${innerId}) 
-        -->
-    </h2>
+    <div class="rainbow">
+        <h1 id="station_name">
+            <!-- fetchStationWhenUpdate/axios.get
+            ${stationName}<i>${stationNameEN}</i>(${innerId}) 
+            -->
+        </h1>
+    </div>
+
     <pre id="station_txt">
         <!-- fetchStationWhenUpdate/fetch
         ../info_txt/${lineName}/${stationName}.txt

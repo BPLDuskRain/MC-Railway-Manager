@@ -6,7 +6,7 @@ function fetchLineWhenUpdate() {
     const lineName_element = document.getElementById('line_name');
     lineName_element.textContent = `${lineName}`;
 
-    fetch(`../info_txt/${lineName}/${lineName}.txt`)
+    fetch(`../txt/${lineName}/${lineName}.txt`)
         .then(response => response.text())
         .then(data => {
             document.getElementById('line_txt').textContent = data;
@@ -27,7 +27,8 @@ function fetchLineWhenUpdate() {
                 stations.forEach(station => {
                     const{stationName, stationNameEN, innerId} = station;
                     
-                    const stationName_element = document.createElement('h3');
+                    const stationName_element = document.createElement('p');
+                    stationName_element.style.color = `${line.lineColor}`;
                         const stationName_a_element = document.createElement('a');
                             stationName_a_element.href = `../station_info/station_info.html?lineName=${lineName}&stationName=${stationName}`;
                             stationName_a_element.textContent = `${stationName}`;
@@ -52,6 +53,7 @@ function add_station({line, stations}){
         const stationNameEN_label = document.createElement('label');
         const stationNameEN_input = document.createElement('input');
         const lineName_input = document.createElement('input');
+        const br_element = document.createElement('br');
         const preStation_label = document.createElement('label');
         const preStation_select = document.createElement('select');
         const nextStation_label = document.createElement('label');
@@ -120,6 +122,7 @@ function add_station({line, stations}){
         element.appendChild(stationNameEN_label);
         element.appendChild(stationNameEN_input);
         element.appendChild(lineName_input);
+        element.appendChild(br_element);
         element.appendChild(preStation_label);
         element.appendChild(preStation_select);
         element.appendChild(nextStation_label);
@@ -133,7 +136,7 @@ function submitAddStation(){
     var form = document.getElementById('add_station');
     const formData = new FormData(form);
     form.reset();
-    axios.post(`${url}/line/addStation`, formData)
+    axios.post(`${url}/station`, formData)
         .then(response => {
             const new_station = document.getElementById('new_station');
             const station = response.data;
@@ -184,7 +187,8 @@ function delete_station(stations){
 function submitDeleteStation(){
     const form = document.getElementById('delete_station');
     const formData = new FormData(form);
-    axios.post(`${url}/line/delStation`, formData)
+    const stationId = formData.get('stationId');
+    axios.delete(`${url}/station/${stationId}`)
         .then(response =>{
             const old_station = document.getElementById('old_station');
             const station_info = response.data;

@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LineInfo</title>
+    <link rel="stylesheet" href="../css/railway_style.css">
     <script src="../axios.min.js"></script>
     <script src="../config.js"></script>
     <script src="./fetchLine.js"></script>
 </head>
 <body>
-    <h2 id="line_name">
-        <!-- ${lineName} -->
-    </h2>
+    <div class="rainbow">
+        <h1 id="line_name">
+            <!-- ${lineName} -->
+        </h1>
+    </div>
+
     <pre id="line_txt">
     <!-- fetchLineWhenUpdate/fetch
         ../info_txt/${lineName}/${lineName}.txt
@@ -20,15 +24,17 @@
     <div id="stations_info">
     <!-- fetchLineWhenUpdate/axios.get
         http://localhost:8080/line/${lineName}
-        <h3>
+        <p>
             <a>
                 编号${innerId}：${stationName} 
             </a>
             <i>${stationNameEN}</i>
-        </h3>
+        </p>
     -->
     </div>
-    <h3>增添车站</h3>
+    <div>
+        <h2>增添车站</h2>
+    </div>
     <form id="add_station">
     <!-- add_station
         <label for="stationName">车站名</label>
@@ -47,6 +53,7 @@
 
         </select>
 
+        <br>
         <button type="button">添加</button> click->submitAdd()
     -->
     </form>
@@ -57,7 +64,10 @@
         </p>
     -->
     </div>
-    <h3>删除车站</h3>
+
+    <div>
+        <h2>删除车站</h2>
+    </div>
     <form id="delete_station">
     <!-- 
         <label for="delStation">删除站点</label>

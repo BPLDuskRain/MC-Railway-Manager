@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LinesInfo</title>
+    <link rel="stylesheet" href="../css/railway_style.css">
     <script src="../axios.min.js"></script>
     <script src="../config.js"></script>
     <script src="./fetchLines.js"></script>
 </head>
 <body>
-    <h2>雨落轨道线路大全</h2>
+    <div class="rainbow">
+        <h1>雨落轨道线路大全</h1>
+    </div>
     <div id="lines_info">
     <!-- fetchLines()
         <p>
@@ -30,12 +33,24 @@
         </p>
     -->
     </div>
-    <h3>增添线路</h3>
+
+    <div>
+        <a href="../img/XLMRailwayMap.png">
+            <img src="../img/XLMRailwayMap.png" title="地铁图" alt="地铁图">
+        </a>
+        <p><a href="../img/XLMRailwayMap.png" download="XLMRailwayMap.png">地铁图，点击可下载喵！</a></p>
+    </div>
+
+
+    <div>
+        <h2>增添线路</h2>
+    </div>
     <form id="add_line">
         <label for="lineName">线路名称</label>
         <input id="lineName" name="lineName" type="text" required>
         <label for="lineColor">线路色彩</label>
         <input id="lineColor" name="lineColor" type="color" required>
+        <br>
         <button id="submit_addLine" type="button">添加</button>
     </form>
     <div id="new_line">
@@ -46,7 +61,9 @@
      -->
     </div>
 
-    <h3>删除线路</h3>
+    <div>
+        <h2>删除线路</h2>
+    </div>
     <form id="delete_line">
         <label for="delLine">线路名称</label>
         <select id="delLine" name="lineName">
@@ -56,6 +73,7 @@
             </option>
         -->
         </select>
+        <br>
         <button id="submit_delLine" type="button">删除</button>
     </form>
     <div id="old_line">
@@ -68,13 +86,13 @@
         </p>
      -->
     </div>
-    <br>
-    <div id="admin_href">
-        <a href="../admin/admin.html" target="_blank">点击跳转管理员登陆</a>
-    </div>
-    <br>
+
     <div id="station_href">
         <a href="../stations_info/stations_info.html">按建造时间展示</a>
+    </div>
+
+    <div id="admin_href">
+        <a href="../admin/admin.html" target="_blank">点击跳转管理员登陆</a>
     </div>
 </body>
 </html>

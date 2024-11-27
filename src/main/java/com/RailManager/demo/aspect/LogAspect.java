@@ -58,5 +58,6 @@ public class LogAspect {
         }
         System.out.print("|return " + res);
         System.out.println();
+        System.out.println();
     }
 }

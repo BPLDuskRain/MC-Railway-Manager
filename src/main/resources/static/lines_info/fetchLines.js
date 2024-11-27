@@ -131,7 +131,7 @@ function submitAddLine(){
     var form = document.getElementById('add_line');
     const formData = new FormData(form);
     form.reset();
-    axios.post(`${url}/line/addLine`, formData)
+    axios.post(`${url}/line`, formData)
         .then(response => {
             const new_line = document.getElementById('new_line');
             if(response.data == 'CANNOT ADD'){
@@ -149,7 +149,8 @@ function submitAddLine(){
 function submitDeleteLine(){
     const form = document.getElementById('delete_line');
     const formData = new FormData(form);
-    axios.post(`${url}/line/delLine`, formData)
+    const lineName = formData.get('lineName');
+    axios.delete(`${url}/line/${lineName}`)
         .then(response => {
             const old_line = document.getElementById('old_line');
             if(response.data == 'CANNOT DELETE'){
@@ -165,7 +166,7 @@ function submitDeleteLine(){
                 stations.forEach(station => {
                     const station_p = document.createElement('p');
                     station_p.style.color = `${line.lineColor}`;
-                    station_p.textContent = `${line.lineName}/${station.innerId}: ${station.stationId}/${station.stationName}(${stationNameEN})删除成功喵！`;
+                    station_p.textContent = `${line.lineName}/${station.innerId}: ${station.stationId}/${station.stationName}(${station.stationNameEN})删除成功喵！`;
                     element.appendChild(station_p);
                 });
             old_line.appendChild(element);
